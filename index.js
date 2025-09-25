@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
 
     const coffeesCollection = client.db("coffeeDB").collection("coffees");
+    const usersCollection = client.db("coffeeDB").collection("usersProfile");
 
     app.get('/coffees', async (req, res)=>{
         const result = await coffeesCollection.find().toArray();
@@ -63,6 +64,20 @@ async function run() {
         const result = await coffeesCollection.deleteOne(query);
         res.send(result);
     })
+
+    // User profile data APIs
+
+    app.get('/users-profile', async(req,res)=>{
+        const result = await usersCollection.find().toArray();
+        res.send(result)
+    })
+
+    app.post('/users-profile', async (req, res)=>{
+        const userData = req.body;
+        const result = await usersCollection.insertOne(userData);
+        res.send(result);
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
