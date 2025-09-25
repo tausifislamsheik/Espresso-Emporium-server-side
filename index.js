@@ -72,10 +72,29 @@ async function run() {
         res.send(result)
     })
 
+    app.get('/users-profile/:id', async (req, res)=>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await usersCollection.findOne(query);
+        res.send(result);
+    })
+
     app.post('/users-profile', async (req, res)=>{
         const userData = req.body;
         const result = await usersCollection.insertOne(userData);
         res.send(result);
+    })
+
+    app.put('/users-profile/:id', async (req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = { upsert: true };
+      const updatedUser = req.body;
+      const updatedDoc = {
+        $set:updatedUser
+      }
+      const result = await usersCollection.updateOne(filter, updatedDoc, options)
+      res.send(result);
     })
 
     app.patch('/users-profile', async (req, res)=>{
